@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pac-Man</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+        }
+        canvas {
+            border: 2px solid #fff;
+        }
+        .controls {
+            position: absolute;
+            bottom: 10px;
+            display: flex;
+            justify-content: center;
+            width: 100%;
+        }
+        .button {
+            background-color: #333;
+            color: #fff;
+            border: 1px solid #fff;
+            padding: 10px;
+            margin: 5px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:active {
+            background-color: #555;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="gameCanvas" width="400" height="400"></canvas>
+    <div class="controls">
+        <div class="button" id="up">↑</div>
+        <div class="button" id="left">←</div>
+        <div class="button" id="down">↓</div>
+        <div class="button" id="right">→</div>
+    </div>
+    <script>
+        const canvas = document.getElementById('gameCanvas');
+        const ctx = canvas.getContext('2d');
+
+        // Pac-Man properties
+        const pacMan = {
+            x: canvas.width / 2,
+            y: canvas.height / 2,
+            size: 30,
+            dx: 0,
+            dy: 0,
+            speed: 5
+        };
+
+        // Draw Pac-Man
+        function drawPacMan() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.beginPath();
+            ctx.arc(pacMan.x, pacMan.y, pacMan.size, 0.2 * Math.PI, 1.8 * Math.PI);
+            ctx.lineTo(pacMan.x, pacMan.y);
+            ctx.fillStyle = 'yellow';
+            ctx.fill();
+            ctx.closePath();
+        }
+
+        // Update Pac-Man position
+        function updatePacMan() {
+            pacMan.x += pacMan.dx;
+            pacMan.y += pacMan.dy;
+
+            // Boundary checks
+            if (pacMan.x < pacMan.size) pacMan.x = pacMan.size;
+            if (pacMan.x > canvas.width - pacMan.size) pacMan.x = canvas.width - pacMan.size;
+            if (pacMan.y < pacMan.size) pacMan.y = pacMan.size;
+            if (pacMan.y > canvas.height - pacMan.size) pacMan.y = canvas.height - pacMan.size;
+        }
+
+        // Game loop
+        function gameLoop() {
+            drawPacMan();
+            updatePacMan();
+            requestAnimationFrame(gameLoop);
+        }
+
+        // Control buttons
+        document.getElementById('up').addEventListener('touchstart', () => {
+            pacMan.dy = -pacMan.speed;
+        });
+        document.getElementById('down').addEventListener('touchstart', () => {
+            pacMan.dy = pacMan.speed;
+        });
+        document.getElementById('left').addEventListener('touchstart', () => {
+            pacMan.dx = -pacMan.speed;
+        });
+        document.getElementById('right').addEventListener('touchstart', () => {
+            pacMan.dx = pacMan.speed;
+        });
+
+        // Stop movement on touch end
+        document.querySelectorAll('.button').forEach(button => {
+            button.addEventListener('touchend', () => {
+                pacMan.dx = 0;
+                pacMan.dy = 0;
+            });
+        });
+
+        // Start the game loop
+        gameLoop();
+    </script>
+</body>
+</html>
+]
+
